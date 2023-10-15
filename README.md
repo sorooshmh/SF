@@ -56,7 +56,7 @@ sudo systemctl enable --now nfs-server
 ```
 #Create directory and set permissions
 ```
-sudo mkdir /var/nfs
+sudo mkdir /mnt/nfs
 sudo chown nobody:nobody /mnt/nfs
 sudo chmod 755 /mnt/nfs
 ```
