@@ -1,0 +1,26 @@
+version: '2'
+
+networks:
+  twitter-net:
+    driver: bridge
+services:
+  mysql:
+    image: 'mysql-tw:1.0'
+    container_name: mysql-host
+    ports:
+      - '3306:3306'
+    networks:
+      - twitter-net
+    volumes:
+      - 'twitter_data:/var/lib/mysql'
+  python:
+    container_name: python
+    image: 'python-tw:1.0'
+    stdin_open: true
+    tty: true
+    networks:
+      - twitter-net
+    restart: unless-stopped
+volumes:
+  twitter_data:
+    driver: local

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-app
+  namespace: twitter
+  labels:
+    app: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      nodeName: worker1
+      containers:
+      - name: mysql-service
+        image: mysql-tw:1.0
+        imagePullPolicy: Never
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tw-secrets
+              key: MYSQL_ROOT_PASSWORD
+
+        - name:  MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: tw-secrets
+              key: MYSQL_USER
+
+        - name:  MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tw-secrets
+              key: MYSQL_PASSWORD
+
+        - name:  MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: tw-secrets
+              key: MYSQL_DATABASE
+        
+        ports:
+        - containerPort: 3306
+          name: mysql-host
+        volumeMounts:
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysql
+          - name: my-cnf
+            mountPath: /etc/my.cnf
+            subPath: my.cnf
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc-twitter
+        - name: my-cnf
+          configMap:
+            name: my-cnf-config
+
+

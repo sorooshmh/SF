@@ -1,0 +1,24 @@
+version: '2'
+
+networks:
+  ldap-net:
+    driver: bridge
+services:
+  openldap:
+    image: 'openldap-sl:1.0'
+    container_name: openldap
+    ports:
+      - '1389:1389'
+      - '1636:1636'
+    networks:
+      - ldap-net
+    volumes:
+      - 'openldap_data:/bitnami/openldap'
+  mariadb:
+    container_name: mariadb
+    image: 'mariadb-sl:1.0'
+    networks:
+      - ldap-net
+volumes:
+  openldap_data:
+    driver: local

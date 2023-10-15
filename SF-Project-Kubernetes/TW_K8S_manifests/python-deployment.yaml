@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+  namespace: twitter
+  labels:
+    app: python
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: python
+  template:
+    metadata:
+      labels:
+        app: python
+    spec:
+      containers:
+        - image: python-tw:1.0
+          imagePullPolicy: Never
+          name: python-twitter
+          tty: true
+
+      initContainers:
+        - name: test
+          image: mysql-tw:1.0
+          imagePullPolicy: Never
+          command: ['sh', '-c','mysql -u root -p$MYSQL_ROOT_PASSWORD -h $MYSQL_SERVICE_HOST']
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tw-secrets
+                  key: MYSQL_ROOT_PASSWORD
+
+            - name: MYSQL_SERVICE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tw-secrets
+                  key: MYSQL_SERVICE_HOST
+
