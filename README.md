@@ -16,11 +16,12 @@ procedures.sql: This script includes various procedures that execute complex que
 tw_app.sh: This file serves as a user interface, allowing us to interact with the database through the command-line interface (CLI). It incorporates all the features implemented for our designed Twitter system.
 
 **Requirements**
-*Task1
+  *Task1
 1 server1( Oracle Linux) for Docker host
 Installation Docker-compose
 
-*Task2
+
+  *Task2
 1 server1( Oracle Linux) for Master
 
 2 servers (Oracle Linux) for Workers
